@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VodaMoney</title>
+    <style>
+        :root {
+            --primary: #2e7d32;
+            --primary-dark: #1b5e20;
+            --primary-light: #4caf50;
+            --secondary: #ff9800;
+            --secondary-dark: #f57c00;
+            --text: #333;
+            --text-light: #666;
+            --background: #f5f5f5;
+            --white: #fff;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --radius: 8px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Estilos para as páginas de autenticação */
+        .auth-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            padding: 20px;
+        }
+
+        .auth-box {
+            background-color: var(--white);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            width: 100%;
+            max-width: 400px;
+            padding: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .auth-header h1 {
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .auth-header p {
+            color: var(--text-light);
+        }
+
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .auth-tab {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-bottom: 2px solid transparent;
+        }
+
+        .auth-tab.active {
+            border-bottom: 2px solid var(--primary);
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .auth-form {
+            display: none;
+        }
+
+        .auth-form.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: var(--text);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: var(--radius);
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(46, 125, 50, 0.2);
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: var(--primary);
+            color: var(--white);
+            border: none;
+            border-radius: var(--radius);
+            padding: 12px 20px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            width: 100%;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--secondary-dark);
+        }
+
+        /* Estilos para o dashboard */
+        .dashboard {
+            display: none;
+            min-height: 100vh;
+        }
+
+        .dashboard-header {
+            background-color: var(--primary);
+            color: var(--white);
+            padding: 20px 0;
+            box-shadow: var(--shadow);
+        }
+
+        .dashboard-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-weight: bold;
+        }
+
+        .dashboard-main {
+            padding: 30px 0;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .dashboard-card {
+            background-color: var(--white);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 20px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .balance-amount {
+            font-size: 28px;
+            font-weight: bold;
+            color: var(--primary);
+            margin: 10px 0;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .btn-group .btn {
+            width: auto;
+            flex: 1;
+        }
+
+        .task-list {
+            list-style: none;
+        }
+
+        .task-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .task-item:last-child {
+            border-bottom: none;
+        }
+
+        .task-info h3 {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        .task-info p {
+            font-size: 14px;
+            color: var(--text-light);
+        }
+
+        .task-reward {
+            color: var(--secondary);
+            font-weight: bold;
+        }
+
+        .task-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        /* Modal de levantamento */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: var(--white);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            width: 100%;
+            max-width: 500px;
+            padding: 30px;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-light);
+        }
+
+        .payment-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .payment-option {
+            border: 2px solid #eee;
+            border-radius: var(--radius);
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .payment-option:hover, .payment-option.selected {
+            border-color: var(--primary);
+            background-color: rgba(46, 125, 50, 0.05);
+        }
+
+        .payment-icon {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .withdraw-form {
+            margin-top: 20px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+            
+            .btn-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Página de Login/Registro -->
+    <div class="auth-container" id="authPage">
+        <div class="auth-box">
+            <div class="auth-header">
+                <h1>VodaMoney</h1>
+                <p>Invista em produtos e ganhe com tarefas diárias</p>
+            </div>
+            
+            <div class="auth-tabs">
+                <div class="auth-tab active" data-tab="login">Entrar</div>
+                <div class="auth-tab" data-tab="register">Registrar</div>
+            </div>
+            
+            <form class="auth-form active" id="loginForm">
+                <div class="form-group">
+                    <label for="loginEmail">Email</label>
+                    <input type="email" id="loginEmail" placeholder="@gmail.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Senha</label>
+                    <input type="password" id="loginPassword" placeholder="Sua senha" required>
+                </div>
+                <button type="submit" class="btn">Entrar</button>
+            </form>
+            
+            <form class="auth-form" id="registerForm">
+                <div class="form-group">
+                    <label for="registerName">Nome Completo</label>
+                    <input type="text" id="registerName" placeholder="Seu nome completo" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerEmail">Email</label>
+                    <input type="email" id="registerEmail" placeholder="@gmail.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerPassword">Senha</label>
+                    <input type="password" id="registerPassword" placeholder="Crie uma senha" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerConfirmPassword">Confirmar Senha</label>
+                    <input type="password" id="registerConfirmPassword" placeholder="Confirme sua senha" required>
+                </div>
+                <button type="submit" class="btn">Criar Conta</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div class="dashboard" id="dashboardPage">
+        <header class="dashboard-header">
+            <div class="container">
+                <nav class="dashboard-nav">
+                    <div class="logo">VodaMoney</div>
+                    <div class="user-menu">
+                        <div class="user-avatar" id="userInitials">U</div>
+                        <button class="btn btn-secondary" id="logoutBtn">Sair</button>
+                    </div>
+                </nav>
+            </div>
+        </header>
+        
+        <main class="dashboard-main">
+            <div class="container">
+                <div class="dashboard-grid">
+                    <!-- Saldo e Investimentos -->
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <h2 class="card-title">Saldo Disponível</h2>
+                        </div>
+                        <div class="balance-amount" id="balanceAmount">MZN 0,00</div>
+                        <p>Seu saldo disponível para levantamento</p>
+                        <div class="btn-group">
+                            <button class="btn" id="investBtn">Fazer Pagamento</button>
+                            <button class="btn btn-secondary" id="withdrawBtn">Levantar</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Estatísticas -->
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <h2 class="card-title"></h2>
+                        </div>
+                        <div class="stats-list">
+                            <div class="stat-item">
+                                <h3>Ganhos diários</h3>
+                                <p id="monthEarnings">MZN 0,00</p>
+                            </div>
+                            <div class="stat-item">
+                                <h3>Tarefas Concluídas</h3>
+                                <p id="completedTasks"></p>
+                            </div>
+                            <div class="stat-item">
+                                
+                                <p id="activeInvestments"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tarefas Diárias -->
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h2 class="card-title">Tarefas Diárias</h2>
+                        <span id="tasksDate">Hoje</span>
+                    </div>
+                    <ul class="task-list" id="taskList">
+                        <!-- Tarefas serão inseridas aqui via JavaScript -->
+                    </ul>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal de Levantamento -->
+    <div class="modal" id="withdrawModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Levantamento de Fundos</h2>
+                <button class="close-modal" id="closeWithdrawModal">&times;</button>
+            </div>
+            <p>Selecione o método de pagamento:</p>
+            
+            <div class="payment-options">
+                <div class="payment-option" data-method="">
+        
+                <div class="payment-option" data-method="mpesal">
+                    <div class="payment-icon"></div>
+                    <div>M-Pesa</div>
+                </div>
+            </div>
+            
+            <form class="withdraw-form" id="withdrawForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="withdrawAmount">Valor do Levantamento</label>
+                        <input type="number" id="withdrawAmount" placeholder="0,00" min="700" step="2,500" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="paymentInfo">Informações de Pagamento</label>
+                        <input type="text" id="paymentInfo" placeholder="insira o Seu número." required>
+                    </div>
+                </div>
+                <button type="submit" class="btn">Solicitar Levantamento</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Dados da aplicação
+        let currentUser = null;
+        let users = JSON.parse(localStorage.getItem('investTaskUsers')) || [];
+        let tasks = [
+            { id: 1, title: "Coletar", description: "", reward: 0.50, completed: false },
+            { id: 2, title: "coletar", description: "", reward: 2.50, completed: false },
+            { id: 3, title: "coletar", description: "", reward: 2.50, completed: false },
+            { id: 4, title: "coletar", description: "", reward: 2.50, completed: false },
+            { id: 5, title: "coletar", description: "", reward: 7.50, completed: false }
+        ];
+
+        // Elementos da DOM
+        const authPage = document.getElementById('authPage');
+        const dashboardPage = document.getElementById('dashboardPage');
+        const loginForm = document.getElementById('loginForm');
+        const registerForm = document.getElementById('registerForm');
+        const authTabs = document.querySelectorAll('.auth-tab');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const balanceAmount = document.getElementById('balanceAmount');
+        const monthEarnings = document.getElementById('monthEarnings');
+        const completedTasks = document.getElementById('completedTasks');
+        const activeInvestments = document.getElementById('activeInvestments');
+        const userInitials = document.getElementById('userInitials');
+        const taskList = document.getElementById('taskList');
+        const withdrawBtn = document.getElementById('withdrawBtn');
+        const withdrawModal = document.getElementById('withdrawModal');
+        const closeWithdrawModal = document.getElementById('closeWithdrawModal');
+        const withdrawForm = document.getElementById('withdrawForm');
+        const paymentOptions = document.querySelectorAll('.payment-option');
+        const investBtn = document.getElementById('investBtn');
+
+        // Verificar se há usuário logado
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedUser = localStorage.getItem('currentUser');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                showDashboard();
+            }
+        });
+
+        // Alternar entre login e registro
+        authTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabName = tab.getAttribute('data-tab');
+                
+                authTabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                
+                document.querySelectorAll('.auth-form').forEach(form => {
+                    form.classList.remove('active');
+                });
+                
+                document.getElementById(`${tabName}Form`).classList.add('active');
+            });
+        });
+
+        // Login
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            const user = users.find(u => u.email === email && u.password === password);
+            
+            if (user) {
+                currentUser = user;
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                showDashboard();
+            } else {
+                alert('Email ou senha incorretos!');
+            }
+        });
+
+        // Registro
+        registerForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const name = document.getElementById('registerName').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('registerConfirmPassword').value;
+            
+            if (password !== confirmPassword) {
+                alert('As senhas não coincidem!');
+                return;
+            }
+            
+            if (users.find(u => u.email === email)) {
+                alert('Este email já está em uso!');
+                return;
+            }
+            
+            const newUser = {
+                id: Date.now(),
+                name,
+                email,
+                password,
+                balance: 0,
+                monthEarnings: 0,
+                completedTasks: 0,
+                activeInvestments: 0,
+                tasksCompleted: []
+            };
+            
+            users.push(newUser);
+            localStorage.setItem('investTaskUsers', JSON.stringify(users));
+            
+            currentUser = newUser;
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            
+            showDashboard();
+        });
+
+        // Logout
+        logoutBtn.addEventListener('click', () => {
+            currentUser = null;
+            localStorage.removeItem('currentUser');
+            showAuthPage();
+        });
+
+        // Mostrar dashboard
+        function showDashboard() {
+            authPage.style.display = 'none';
+            dashboardPage.style.display = 'block';
+            
+            updateDashboard();
+        }
+
+        // Mostrar página de autenticação
+        function showAuthPage() {
+            authPage.style.display = 'flex';
+            dashboardPage.style.display = 'none';
+            
+            // Limpar formulários
+            loginForm.reset();
+            registerForm.reset();
+        }
+
+        // Atualizar dashboard
+        function updateDashboard() {
+            if (!currentUser) return;
+            
+            // Atualizar informações do usuário
+            balanceAmount.textContent = `MZN ${currentUser.balance.toFixed(2)}`;
+            monthEarnings.textContent = `MZN ${currentUser.monthEarnings.toFixed(2)}`;
+            completedTasks.textContent = currentUser.completedTasks;
+            activeInvestments.textContent = currentUser.activeInvestments;
+            
+            // Iniciais do usuário
+            const names = currentUser.name.split(' ');
+            userInitials.textContent = (names[0][0] + (names[1] ? names[1][0] : '')).toUpperCase();
+            
+            // Atualizar lista de tarefas
+            updateTaskList();
+        }
+
+        // Atualizar lista de tarefas
+        function updateTaskList() {
+            taskList.innerHTML = '';
+            
+            tasks.forEach(task => {
+                const isCompleted = currentUser.tasksCompleted && 
+                                   currentUser.tasksCompleted.includes(task.id);
+                
+                const taskItem = document.createElement('li');
+                taskItem.className = 'task-item';
+                
+                taskItem.innerHTML = `
+                    <div class="task-info">
+                        <h3>${task.title}</h3>
+                        <p>${task.description}</p>
+                    </div>
+                    <div class="task-actions">
+                        <span class="task-reward">MZN ${task.reward.toFixed(2)}</span>
+                        <button class="btn ${isCompleted ? 'btn-secondary' : ''}" 
+                                data-task-id="${task.id}" 
+                                ${isCompleted ? 'disabled' : ''}>
+                            ${isCompleted ? 'Concluída' : 'Concluir'}
+                        </button>
+                    </div>
+                `;
+                
+                taskList.appendChild(taskItem);
+            });
+            
+            // Adicionar eventos aos botões de tarefas
+            document.querySelectorAll('.task-actions .btn').forEach(btn => {
+                btn.addEventListener('click', completeTask);
+            });
+        }
+
+        // Completar tarefa
+        function completeTask(e) {
+            const taskId = parseInt(e.target.getAttribute('data-task-id'));
+            const task = tasks.find(t => t.id === taskId);
+            
+            if (!task) return;
+            
+            // Verificar se a tarefa já foi concluída
+            if (!currentUser.tasksCompleted) {
+                currentUser.tasksCompleted = [];
+            }
+            
+            if (currentUser.tasksCompleted.includes(taskId)) {
+                return;
+            }
+            
+            // Adicionar recompensa
+            currentUser.balance += task.reward;
+            currentUser.monthEarnings += task.reward;
+            currentUser.completedTasks += 1;
+            currentUser.tasksCompleted.push(taskId);
+            
+            // Atualizar localStorage
+            const userIndex = users.findIndex(u => u.id === currentUser.id);
+            if (userIndex !== -1) {
+                users[userIndex] = currentUser;
+                localStorage.setItem('investTaskUsers', JSON.stringify(users));
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            }
+            
+            updateDashboard();
+        }
+
+        // Abrir modal de levantamento
+        withdrawBtn.addEventListener('click', () => {
+            withdrawModal.style.display = 'flex';
+        });
+
+        // Fechar modal de levantamento
+        closeWithdrawModal.addEventListener('click', () => {
+            withdrawModal.style.display = 'none';
+        });
+
+        // Selecionar método de pagamento
+        paymentOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                paymentOptions.forEach(o => o.classList.remove('selected'));
+                option.classList.add('selected');
+            });
+        });
+
+        // Solicitar levantamento
+        withdrawForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const amount = parseFloat(document.getElementById('withdrawAmount').value);
+            const paymentInfo = document.getElementById('paymentInfo').value;
+            const selectedMethod = document.querySelector('.payment-option.selected');
+            
+            if (!selectedMethod) {
+                alert('Por favor, selecione um método de pagamento!');
+                return;
+            }
+            
+            if (amount < 700.00) {
+                alert('O valor mínimo para levantamento é MZN 5000,00!');
+                return;
+            }
+            
+            if (amount > currentUser.balance) {
+                alert('Saldo insuficiente para este levantamento!');
+                return;
+            }
+            
+            // Processar levantamento
+            currentUser.balance -= amount;
+            
+            // Atualizar localStorage
+            const userIndex = users.findIndex(u => u.id === currentUser.id);
+            if (userIndex !== -1) {
+                users[userIndex] = currentUser;
+                localStorage.setItem('investTaskUsers', JSON.stringify(users));
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            }
+            
+            alert(`Levantamento de MZN ${amount.toFixed(2)} solicitado com sucesso! O valor será processado em até 3 dias úteis.`);
+            
+            withdrawModal.style.display = 'none';
+            withdrawForm.reset();
+            paymentOptions.forEach(o => o.classList.remove('selected'));
+            
+            updateDashboard();
+        });
+
+        // Botão de investir
+        investBtn.addEventListener('click', () => {
+            alert(' FAZER SUA COMPRA=>1193015.');
+        });
+    </script>
+</body>
+</html>
